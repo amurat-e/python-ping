@@ -49,10 +49,10 @@ except ImportError:
 
 if sys.platform == "win32":
     # On Windows, the best timer is time.clock()
-    default_timer = time.clock
+    default_timer = time.perf_counter
 else:
     # On most other platforms the best timer is time.time()
-    default_timer = time.time
+    default_timer = time.perf_counter
 
 # ICMP parameters
 
@@ -494,7 +494,7 @@ def verbose_ping(hostname, timeout=3000, count=3,
     while 1:
         delay = single_ping(destIP, hostname, timeout, mySeqNumber,
                             numDataBytes, ipv6=ipv6, myStats=myStats, sourceIP=sourceIP)
-        delay = 0 if delay is None else delay[0]
+        delay = 0 if delay[0] is None else delay[0] # amurat_e Changed: delay = 0 if delay is None else delay[0]
 
         mySeqNumber += 1
 
@@ -546,8 +546,8 @@ def quiet_ping(hostname, timeout=3000, count=3, advanced_statistics=False,
         delay = single_ping(destIP, hostname, timeout, mySeqNumber,
                             numDataBytes, ipv6=ipv6, myStats=myStats,
                             verbose=False, sourceIP=sourceIP)
-        delay = 0 if delay is None else delay[0]
-
+        delay = 0 if delay[0] is None else delay[0] # amurat_e Changed: delay = 0 if delay is None else delay[0]
+        
         mySeqNumber += 1
         # Pause for the remainder of the MAX_SLEEP period (if applicable)
         if (MAX_SLEEP > delay):
