@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 from __future__ import division, print_function
@@ -401,18 +401,23 @@ def _dump_stats(myStats):
     Show stats when pings are done
     """
     print("\n----%s PYTHON PING Statistics----" % (myStats.thisIP))
-
-    print("%d packets transmitted, %d packets received, %0.1f%% packet loss"
+    
+    try:
+        print("%d packets transmitted, %d packets received, %0.1f%% packet loss"
           % (myStats.pktsSent, myStats.pktsRcvd, 100.0 * myStats.fracLoss))
 
-    if myStats.pktsRcvd > 0:
-        print("round-trip (ms)  min/avg/max = %0.1f/%0.1f/%0.1f" % (
+        if myStats.pktsRcvd > 0:
+            print("round-trip (ms)  min/avg/max = %0.1f/%0.1f/%0.1f" % (
             myStats.minTime, myStats.avrgTime, myStats.maxTime
         ))
         print('                 median/pstddev = %0.2f/%0.2f' % (
             myStats.median_time, myStats.pstdev_time
         ))
-
+    except ZeroDivisionError as e:
+        pass
+    except TypeError as e:
+        # amurat_e: (TypeError) unsupported operand type(s) for *: 'float' and 'NoneType'
+        print("General failure occurred. No statistic calculated...")
     print('')
     return
 
@@ -637,7 +642,6 @@ if __name__ == '__main__':
         sys.exit(list(verbose_ping(parsed.address, parsed.timeout,
                                    None, parsed.packet_size,
                                    ipv6=parsed.ipv6, sourceIP=parsed.source_address))[:-1])
-
     else:
         sys.exit(list(verbose_ping(parsed.address, parsed.timeout,
                                    parsed.request_count, parsed.packet_size,
